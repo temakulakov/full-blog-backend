@@ -4,17 +4,21 @@ const userSchema = mongoose.Schema(
   {
     fullName: {
       type: String,
-      required: true,
+      required: true
     },
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
-    password: String,
+    password: {
+      type: String,
+      required: true
+    },
+    avatarURL: String
   },
   {
-    timeStamp: true,
+    timeStamp: true
   }
 );
 

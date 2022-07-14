@@ -1,7 +1,10 @@
 import express from "express";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import { registerValidation } from "./validations/auth.js";
 import { validationResult } from "express-validator";
+import { registerValidation } from "./validations/auth.js";
+import UserModel from "./models/User.js";
 
 const PORT = 4000;
 
@@ -25,8 +28,14 @@ app.post("/auth/register", registerValidation, (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json(errors.array());
   } else {
-    return res.status(200).json(req.body);
+    return res.json({ success: true });
   }
+  const doc = new UserModel({
+    email: req.body.email,
+    fullname: req.body.fullName,
+    avatarURL: req.body.avatarURL,
+    passwordHash: req.body.password,
+  });
 });
 
 app.listen(PORT, (err) => {
