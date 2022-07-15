@@ -10,7 +10,7 @@ const PORT = 4000;
 
 mongoose
   .connect(
-    "mongodb+srv://admin:wwwwww@cluster0.gduzx.mongodb.net/?retryWrites=true&w=majority"
+    "mongodb+srv://admin:wwwwww@cluster0.gduzx.mongodb.net/blog?retryWrites=true&w=majority"
   )
   .then(() => {
     console.log("DB was been connected...");
@@ -22,20 +22,76 @@ mongoose
 const app = express();
 
 app.use(express.json());
+app.post("/auth/login", async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ email: req.body.email });
 
-app.post("/auth/register", registerValidation, (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json(errors.array());
-  } else {
-    return res.json({ success: true });
+    if (!user) {
+      return req.status(404).json({
+        message: "Login incorrect",
+      });
+    }
+    const isValidPassword = await bcrypt.compare(
+      req.body.password,
+      user._doc.passwordHashed
+    );
+    if (!isValidPassword) {
+      return req.status(404).json({
+        message: "Login or password incorrect",
+      });
+    }
+    const token = jwt.sign(
+      {
+        _id: user._id,
+      },
+      "jwtSecret",
+      { expiresIn: "30d" }
+    );
+    res.status(200).json({
+      message: "Excelent!",
+      login: user._doc.email,
+      token: token,
+    });
+  } catch (err) {
+    console.log(err);
   }
-  const doc = new UserModel({
-    email: req.body.email,
-    fullname: req.body.fullName,
-    avatarURL: req.body.avatarURL,
-    passwordHash: req.body.password,
-  });
+});
+app.post("/auth/register", registerValidation, async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json(errors.array());
+    } else {
+      const password = req.body.password;
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(password, salt);
+
+      const doc = new UserModel({
+        email: req.body.email,
+        fullName: req.body.fullName,
+        avatarURL: req.body.avatarURL,
+        passwordHashed: passwordHash,
+      });
+      const user = await doc.save();
+      const token = jwt.sign(
+        {
+          _id: user._id,
+        },
+        "jwtSecret",
+        { expiresIn: "30d" }
+      );
+      const { passwordHashed, ...userData } = user._doc;
+      return res.json({
+        ...userData,
+        token: token,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({
+      message: "Failed to register",
+    });
+  }
 });
 
 app.listen(PORT, (err) => {
