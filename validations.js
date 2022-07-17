@@ -16,5 +16,5 @@ export const postCreateValidation = [
   body("title", "Enter title of post").isLength({ min: 4 }).isString(),
   body("text", "Enter text of post").isLength({ min: 10 }).isString(),
   body("tags", "Don't correct format of tags").optional().isString(),
-  body("imageURL", "Don't right link").optional().isURL(),
+  body("user", "Don't right user").isString(),
 ];

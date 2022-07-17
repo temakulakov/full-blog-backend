@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const postSchema = mongoose.Schema(
+const PostSchema = mongoose.Schema(
   {
     title: {
       type: String,
@@ -18,7 +18,7 @@ const postSchema = mongoose.Schema(
     viewCount: {
       type: Number,
       default: 0,
-    }
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
