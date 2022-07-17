@@ -2,24 +2,32 @@ import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema(
   {
-    fullName: {
+    title: {
       type: String,
       required: true,
     },
-    email: {
+    text: {
       type: String,
       required: true,
       unique: true,
     },
-    passwordHashed: {
-      type: String,
-      required: true,
+    tags: {
+      type: Array,
+      default: [],
     },
-    avatarURL: String,
+    viewCount: {
+      type: Number,
+      default: 0,
+    }
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    }
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model("Post", PostSchema);
