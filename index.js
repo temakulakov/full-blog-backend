@@ -21,7 +21,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/auth/me", checkAuth, UserController.getMe());
+app.get("/auth/me", checkAuth, UserController.getMe);
 
 app.post("/auth/login", loginValidation, UserController.login);
 app.post("/auth/register", registerValidation, UserController.register);
