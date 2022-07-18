@@ -1,4 +1,4 @@
-import PostModule from "./../models/Post.js"
+import PostModule from "./../models/Post.js";
 
 export const create = async (req, res) => {
   try {
@@ -8,13 +8,13 @@ export const create = async (req, res) => {
       imageURL: req.body.imageURL,
       tags: req.body.tags,
       user: req.userId,
-    })
+    });
     const post = await doc.save();
     res.json(post);
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      message: "Can't add post..."
-    })
+      message: "Can't add post...",
+    });
   }
 };
