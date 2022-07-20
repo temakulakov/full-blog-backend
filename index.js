@@ -29,7 +29,9 @@ app.use(express.json());
 app.post("/auth/login", loginValidation, UserController.login);
 app.post("/auth/register", registerValidation, UserController.register);
 app.get("/auth/me", checkAuth, UserController.getMe);
-app.post("/post", checkAuth, postCreateValidation, PostController.create);
+app.post("/posts", checkAuth, postCreateValidation, PostController.create);
+app.get("/posts", PostController.getAll);
+app.get("/posts/:id", PostController.getOne);
 
 app.listen(PORT, (err) => {
   if (err) {
