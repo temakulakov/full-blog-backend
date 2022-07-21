@@ -19,11 +19,14 @@ const PostSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    imageURL: {
+      type: String,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
-    }
+      ref: "User",
+    },
   },
   {
     timestamps: true,

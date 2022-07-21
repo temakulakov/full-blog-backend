@@ -6,6 +6,7 @@ import {
   postCreateValidation,
 } from "./validations.js";
 import checkAuth from "./utils/checkAuth.js";
+import multer from "multer";
 import * as UserController from "./controllers/UserController.js";
 import * as PostController from "./controllers/PostController.js";
 
@@ -24,14 +25,33 @@ mongoose
 
 const app = express();
 
+const storage = multer.diskStorage({
+  destination: (_, __, cd) => {
+    cd(null, "uploads");
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalName);
+  },
+});
+
+const upload = multer({ storage });
 app.use(express.json());
 
 app.post("/auth/login", loginValidation, UserController.login);
 app.post("/auth/register", registerValidation, UserController.register);
 app.get("/auth/me", checkAuth, UserController.getMe);
+
+app.post("/uploads", checkAuth, upload.single("image"), (req, res) => {
+  res.status(200).send({
+    message: "/uploads/" + req.file.originalName,
+  });
+});
+
 app.post("/posts", checkAuth, postCreateValidation, PostController.create);
-app.get("/posts", PostController.getAll);
+app.get("/posts", checkAuth, PostController.getAll);
 app.get("/posts/:id", PostController.getOne);
+app.delete("/posts/:id", checkAuth, PostController.removeOne);
+app.patch("/posts/:id", checkAuth, PostController.updateOne);
 
 app.listen(PORT, (err) => {
   if (err) {

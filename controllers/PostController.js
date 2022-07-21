@@ -71,10 +71,56 @@ export const getOne = async (req, res) => {
 export const removeOne = async (req, res) => {
   try {
     const postId = req.params.id;
+    PostModule.findOneAndDelete(
+      {
+        _id: postId,
+      },
+      (err, doc) => {
+        if (!doc) {
+          return res.status(404).json({
+            message: "Post not found",
+          });
+        }
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            message: "Can't remove post",
+          });
+        }
+        return res.status(200).json({
+          message: "Success",
+        });
+      }
+    );
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       message: "Can't return post",
+    });
+  }
+};
+
+export const updateOne = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    await PostModule.updateOne(
+      {
+        _id: postId,
+      },
+      {
+        title: req.body.title,
+        text: req.body.text,
+        tags: req.body.tags,
+        imageURL: req.body.imageURL,
+      }
+    );
+    res.status(200).json({
+      message: "Success",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({
+      message: "Can't update post",
     });
   }
 };
