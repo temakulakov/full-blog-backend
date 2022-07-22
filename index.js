@@ -30,20 +30,21 @@ const storage = multer.diskStorage({
     cd(null, "uploads");
   },
   filename: (_, file, cb) => {
-    cb(null, file.originalName);
+    cb(null, file.originalname);
   },
 });
 
 const upload = multer({ storage });
+
 app.use(express.json());
 
 app.post("/auth/login", loginValidation, UserController.login);
 app.post("/auth/register", registerValidation, UserController.register);
 app.get("/auth/me", checkAuth, UserController.getMe);
 
-app.post("/uploads", checkAuth, upload.single("image"), (req, res) => {
+app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
   res.status(200).send({
-    message: "/uploads/" + req.file.originalName,
+    message: `/uploads/${req.file.originalName}`
   });
 });
 
