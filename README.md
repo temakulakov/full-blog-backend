@@ -1,2 +1,2 @@
 # full-blog
- MERN-stack
+Backend for a site for creating posts. MongoDB, Mongoose ORM, Postgres, JWT, multer (image upload), bycrpt (data hashing)
